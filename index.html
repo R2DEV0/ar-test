@@ -14,41 +14,34 @@
             embedded
             arjs="sourceType: webcam; debugUIEnabled: false;">
             
-            <!-- AR Object positioned behind the camera -->
+            <!-- AR Object -->
             <a-entity
                 id="ar-object"
                 gltf-model="./assets/magnemite/scene.gltf"
-                scale="0.15 0.15 0.15"
-                position="0 0 -5"
+                scale="0.5 0.5 0.5"
+                position="0 0 -3"
                 animation-mixer>
             </a-entity>
 
             <!-- Camera -->
-            <a-camera position="0 0 0" rotation-reader></a-camera>
+            <a-camera position="0 0 0" look-controls enabled></a-camera>
         </a-scene>
 
         <script>
-            // Dynamically adjust object position to be behind the camera
+            // Ensure the model appears behind the user
             document.addEventListener("DOMContentLoaded", () => {
                 const arObject = document.getElementById("ar-object");
                 const camera = document.querySelector("a-camera");
 
-                // Function to place object behind the camera
-                const placeObjectBehindUser = () => {
-                    const cameraPosition = camera.object3D.position;
+                // Adjust the position dynamically
+                camera.addEventListener('loaded', () => {
                     const cameraDirection = camera.object3D.getWorldDirection(new THREE.Vector3());
-
-                    // Calculate the position 5 units behind the user
-                    const distanceBehind = 5; // Adjust distance here
                     arObject.object3D.position.set(
-                        cameraPosition.x - cameraDirection.x * distanceBehind,
-                        cameraPosition.y - cameraDirection.y * distanceBehind,
-                        cameraPosition.z - cameraDirection.z * distanceBehind
+                        -cameraDirection.x * 3,
+                        0,
+                        -cameraDirection.z * 3
                     );
-                };
-
-                // Place the object when the scene is loaded
-                placeObjectBehindUser();
+                });
             });
         </script>
     </body>
