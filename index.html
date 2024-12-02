@@ -34,8 +34,14 @@
                 animation-mixer>
             </a-entity>
 
-            <!-- Camera -->
-            <a-camera gps-camera rotation-reader></a-camera>
+            <!-- Camera with adjusted near, far, and fov -->
+            <a-camera
+                gps-camera
+                rotation-reader
+                near="0.1" 
+                far="10000" 
+                fov="80"> <!-- Field of view -->
+            </a-camera>
         </a-scene>
 
         <script>
@@ -47,8 +53,8 @@
                     const cameraPosition = camera.object3D.position;
                     const cameraDirection = camera.object3D.getWorldDirection(new THREE.Vector3());
 
-                    // Calculate a position 5 meters in front of the camera
-                    const distance = 5; // Distance in meters
+                    // Calculate a position 3 meters in front of the camera
+                    const distance = 3; // Distance in meters
                     const newPosition = {
                         x: cameraPosition.x + cameraDirection.x * distance,
                         y: cameraPosition.y + cameraDirection.y * distance,
