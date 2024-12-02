@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>AR.js Fixed Model Demo</title>
+        <title>AR.js Walk Around Model</title>
         <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
         <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
         <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
@@ -18,17 +18,41 @@
             embedded
             arjs="sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;">
             
-            <!-- 3D model placed in front of the camera -->
+            <!-- 3D model to position -->
             <a-entity
+                id="ar-object"
                 gltf-model="./assets/magnemite/scene.gltf"
                 rotation="0 180 0"
                 scale="0.15 0.15 0.15"
-                position="0 0 -8"
                 animation-mixer>
             </a-entity>
 
             <!-- Camera -->
-            <a-camera position="0 0 0" rotation-reader></a-camera>
+            <a-camera gps-camera rotation-reader></a-camera>
         </a-scene>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const arObject = document.getElementById("ar-object");
+                const camera = document.querySelector("a-camera");
+
+                // Set the model's initial position relative to the camera
+                camera.addEventListener("loaded", () => {
+                    const cameraPosition = camera.object3D.position;
+                    const cameraDirection = camera.object3D.getWorldDirection(new THREE.Vector3());
+
+                    // Calculate position 3 meters in front of the camera
+                    const distance = 5; // Distance in meters
+                    const newPosition = {
+                        x: cameraPosition.x + cameraDirection.x * distance,
+                        y: cameraPosition.y + cameraDirection.y * distance,
+                        z: cameraPosition.z + cameraDirection.z * distance,
+                    };
+
+                    // Set the model's position in the scene
+                    arObject.setAttribute("position", `${newPosition.x} ${newPosition.y} ${newPosition.z}`);
+                });
+            });
+        </script>
     </body>
 </html>
